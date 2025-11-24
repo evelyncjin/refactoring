@@ -107,6 +107,17 @@ public class StatementPrinter {
     }
 
     /**
+     * Converts a cent amount into US currency format.
+     *
+     * @param amountInCents amount in cents
+     * @return formatted USD string
+     */
+    private String usd(int amountInCents) {
+        return NumberFormat.getCurrencyInstance(Locale.US)
+                .format(amountInCents / CENT_DIVISOR);
+    }
+
+    /**
      * Returns a formatted statement of all performances.
      *
      * @return formatted statement
@@ -118,22 +129,19 @@ public class StatementPrinter {
         final StringBuilder result =
                 new StringBuilder("Statement for " + invoice.getCustomer() + System.lineSeparator());
 
-        final NumberFormat formatter =
-                NumberFormat.getCurrencyInstance(Locale.US);
-
         for (final Performance performance : invoice.getPerformances()) {
 
             final Play play = getPlay(performance);
             final int amount = getAmount(performance);
 
-            // add volume credits using helper
+            // add volume credits
             volumeCredits += getVolumeCredits(performance);
 
             result.append(
                     String.format(
                             "  %s: %s (%s seats)%n",
                             play.getName(),
-                            formatter.format(amount / CENT_DIVISOR),
+                            usd(amount),
                             performance.getAudience()
                     )
             );
@@ -144,7 +152,7 @@ public class StatementPrinter {
         result.append(
                 String.format(
                         "Amount owed is %s%n",
-                        formatter.format(totalAmount / CENT_DIVISOR)
+                        usd(totalAmount)
                 )
         );
         result.append(
@@ -157,3 +165,4 @@ public class StatementPrinter {
         return result.toString();
     }
 }
+

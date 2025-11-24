@@ -1,3 +1,4 @@
+22b4be3 finished Task 1.2
 20c8263 finished resolving checkstyle for Task 1.1
 2b4f164 fixed tests for the not-for-credit tasks; parameter ordering and ensuring consistent line endings.
 ff5004e adding shortcut keys for Inline Variable (Re: Piazza question)

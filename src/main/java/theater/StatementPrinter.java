@@ -83,6 +83,30 @@ public class StatementPrinter {
     }
 
     /**
+     * Calculates the volume credits for a performance.
+     *
+     * @param performance the performance
+     * @return the number of volume credits earned
+     */
+    private int getVolumeCredits(Performance performance) {
+        int result = 0;
+
+        // base credits
+        result += Math.max(
+                performance.getAudience() - Constants.BASE_VOLUME_CREDIT_THRESHOLD,
+                0
+        );
+
+        // extra comedy bonus
+        if ("comedy".equals(getPlay(performance).getType())) {
+            result += performance.getAudience()
+                    / Constants.COMEDY_EXTRA_VOLUME_FACTOR;
+        }
+
+        return result;
+    }
+
+    /**
      * Returns a formatted statement of all performances.
      *
      * @return formatted statement
@@ -100,18 +124,10 @@ public class StatementPrinter {
         for (final Performance performance : invoice.getPerformances()) {
 
             final Play play = getPlay(performance);
-
             final int amount = getAmount(performance);
 
-            volumeCredits += Math.max(
-                    performance.getAudience() - Constants.BASE_VOLUME_CREDIT_THRESHOLD,
-                    0
-            );
-
-            if ("comedy".equals(play.getType())) {
-                volumeCredits += performance.getAudience()
-                        / Constants.COMEDY_EXTRA_VOLUME_FACTOR;
-            }
+            // add volume credits using helper
+            volumeCredits += getVolumeCredits(performance);
 
             result.append(
                     String.format(
